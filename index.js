@@ -70,15 +70,15 @@ function isGameOver() {
   }
 
   //walls
-  if (headX < 0) {
-    gameOver = true;
-  } else if (headX === tileCount) {
-    gameOver = true;
-  } else if (headY < 0) {
-    gameOver = true;
-  } else if (headY === tileCount) {
-    gameOver = true;
-  }
+  // if (headX < 0) {
+  //   gameOver = true;
+  // } else if (headX === tileCount) {
+  //   gameOver = true;
+  // } else if (headY < 0) {
+  //   gameOver = true;
+  // } else if (headY === tileCount) {
+  //   gameOver = true;
+  // }
 
   for (let i = 0; i < snakeParts.length; i++) {
     let part = snakeParts[i];
@@ -142,6 +142,19 @@ function drawSnake() {
 function changeSnakePosition() {
   headX = headX + xVelocity;
   headY = headY + yVelocity;
+
+  // Jika kepala keluar dari batas, teleport ke sisi berlawanan
+  if (headX < 0) {
+    headX = tileCount - 1; // Muncul di sisi kanan
+  } else if (headX >= tileCount) {
+    headX = 0; // Muncul di sisi kiri
+  }
+
+  if (headY < 0) {
+    headY = tileCount - 1; // Muncul di bagian bawah
+  } else if (headY >= tileCount) {
+    headY = 0; // Muncul di bagian atas
+  }
 }
 
 function drawApple() {
