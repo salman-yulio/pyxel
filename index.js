@@ -102,7 +102,11 @@ function isGameOver() {
       gradient.addColorStop("1.0", "red");
       // Fill with gradient
       ctx.fillStyle = gradient;
+
+      ctx.fillText("Game Over!", canvas.width / 6.5, canvas.height / 2);
     }
+
+    ctx.fillText("Game Over!", canvas.width / 6.5, canvas.height / 2);
   }
 
   return gameOver;
@@ -172,6 +176,22 @@ function keyDown(event) {
     if (inputsYVelocity == -1) return;
     inputsYVelocity = 1;
     inputsXVelocity = 0;
+  }
+
+  //left
+  if (event.keyCode == 37 || event.keyCode == 65) {
+    // 65 is a
+    if (inputsXVelocity == 1) return;
+    inputsYVelocity = 0;
+    inputsXVelocity = -1;
+  }
+
+  //right
+  if (event.keyCode == 39 || event.keyCode == 68) {
+    //68 is d
+    if (inputsXVelocity == -1) return;
+    inputsYVelocity = 0;
+    inputsXVelocity = 1;
   }
 }
 
