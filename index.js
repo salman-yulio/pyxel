@@ -69,7 +69,7 @@ function isGameOver() {
     return false;
   }
 
-  //walls
+  //tembok
   // if (headX < 0) {
   //   gameOver = true;
   // } else if (headX === tileCount) {
@@ -100,7 +100,7 @@ function isGameOver() {
       gradient.addColorStop("0", " magenta");
       gradient.addColorStop("0.5", "blue");
       gradient.addColorStop("1.0", "red");
-      // Fill with gradient
+      // Isi dengan gradien
       ctx.fillStyle = gradient;
 
       ctx.fillText("Game Over!", canvas.width / 6.5, canvas.height / 2);
