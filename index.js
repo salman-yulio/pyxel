@@ -130,9 +130,9 @@ function drawSnake() {
     ctx.fillRect(part.x * tileCount, part.y * tileCount, tileSize, tileSize);
   }
 
-  snakeParts.push(new SnakePart(headX, headY)); //put an item at the end of the list next to the head
+  snakeParts.push(new SnakePart(headX, headY)); //letakkan item di akhir daftar di sebelah kepala
   while (snakeParts.length > tailLength) {
-    snakeParts.shift(); // remove the furthet item from the snake parts if have more than our tail size.
+    snakeParts.shift(); // lepaskan bagian belakang ular jika ukurannya melebihi ukuran ekor Anda.
   }
 
   ctx.fillStyle = "orange";
@@ -175,7 +175,7 @@ function checkAppleCollision() {
 document.body.addEventListener("keydown", keyDown);
 
 function keyDown(event) {
-  //up
+  //atas
   if (event.keyCode == 38 || event.keyCode == 87) {
     //87 is w
     if (inputsYVelocity == 1) return;
@@ -183,7 +183,7 @@ function keyDown(event) {
     inputsXVelocity = 0;
   }
 
-  //down
+  //bawah
   if (event.keyCode == 40 || event.keyCode == 83) {
     // 83 is s
     if (inputsYVelocity == -1) return;
@@ -191,7 +191,7 @@ function keyDown(event) {
     inputsXVelocity = 0;
   }
 
-  //left
+  //kiri
   if (event.keyCode == 37 || event.keyCode == 65) {
     // 65 is a
     if (inputsXVelocity == 1) return;
@@ -199,7 +199,7 @@ function keyDown(event) {
     inputsXVelocity = -1;
   }
 
-  //right
+  //kanan
   if (event.keyCode == 39 || event.keyCode == 68) {
     //68 is d
     if (inputsXVelocity == -1) return;
