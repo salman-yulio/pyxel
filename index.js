@@ -1,6 +1,6 @@
 let canvas = document.getElementById("game");
 let ctx = canvas.getContext("2d");
-// draw on the screen to get the context, ask canvas  to get the 2d context
+// menggambar di layar untuk mendapatkan konteks, minta kanvas untuk mendapatkan konteks 2d
 
 // snake axis
 class SnakePart {
@@ -9,20 +9,20 @@ class SnakePart {
     this.y = y;
   }
 }
-// speed of the game
+// kecepatan permainan
 let speed = 5;
-// size and count of a tile
+// ukuran dan jumlah tile
 let tileCount = 20;
 let tileSize = canvas.width / tileCount - 2;
-// head of the snake
+// kepala ular
 let headX = 10;
 let headY = 10;
 let snakeParts = [];
 let tailLength = 2;
-// apple size
+// ukuran apple
 let appleX = 5;
 let appleY = 5;
-// movement
+// pergerakan
 let inputsXVelocity = 0;
 let inputsYVelocity = 0;
 
