@@ -1,169 +1,200 @@
 let canvas = document.getElementById("game");
 let ctx = canvas.getContext("2d");
-// draw on the screen to get the context, ask canvas  to get the 2d context
 
-// snake axis
+// Load gambar aset
+let headUp = new Image();
+headUp.src = "assets/head_up.png";
+
+let headDown = new Image();
+headDown.src = "assets/head_down.png";
+
+let headLeft = new Image();
+headLeft.src = "assets/head_left.png";
+
+let headRight = new Image();
+headRight.src = "assets/head_right.png";
+
+let bodyVertical = new Image();
+bodyVertical.src = "assets/body_vertical.png";
+
+let bodyHorizontal = new Image();
+bodyHorizontal.src = "assets/body_horizontal.png";
+
+let bodyTopLeft = new Image();
+bodyTopLeft.src = "assets/body_topleft.png";
+
+let bodyTopRight = new Image();
+bodyTopRight.src = "assets/body_topright.png";
+
+let bodyBottomLeft = new Image();
+bodyBottomLeft.src = "assets/body_bottomleft.png";
+
+let bodyBottomRight = new Image();
+bodyBottomRight.src = "assets/body_bottomright.png";
+
+let appleImage = new Image();
+appleImage.src = "assets/rat.png";
+
+let backgroundImage = new Image();
+backgroundImage.src = "assets/background.png";
+
 class SnakePart {
   constructor(x, y) {
     this.x = x;
     this.y = y;
   }
 }
-// speed of the game
+
 let speed = 5;
-// size and count of a tile
 let tileCount = 20;
 let tileSize = canvas.width / tileCount - 2;
-// head of the snake
 let headX = 10;
 let headY = 10;
 let snakeParts = [];
 let tailLength = 2;
-// apple size
 let appleX = 5;
 let appleY = 5;
-// movement
 let inputsXVelocity = 0;
 let inputsYVelocity = 0;
-
 let xVelocity = 0;
 let yVelocity = 0;
-
 let score = 0;
-
 let gulpSound = new Audio("gulp.mp3");
+let currentHeadImage = headRight;
 
-//game loop
 function drawGame() {
   xVelocity = inputsXVelocity;
   yVelocity = inputsYVelocity;
 
   changeSnakePosition();
   let result = isGameOver();
-  if (result) {
-    return;
-  }
+  if (result) return;
 
   clearScreen();
-
   checkAppleCollision();
   drawApple();
   drawSnake();
-
   drawScore();
 
-  if (score > 5) {
-    speed = 9;
-  }
-  if (score > 10) {
-    speed = 11;
-  }
+  if (score > 5) speed = 9;
+  if (score > 10) speed = 11;
 
   setTimeout(drawGame, 1000 / speed);
 }
 
 function isGameOver() {
-  let gameOver = false;
+  if (yVelocity === 0 && xVelocity === 0) return false;
 
-  if (yVelocity === 0 && xVelocity === 0) {
-    return false;
+  if (headX < 0 || headX === tileCount || headY < 0 || headY === tileCount) {
+    drawGameOverScreen();
+    return true;
   }
 
-  //walls
-  // if (headX < 0) {
-  //   gameOver = true;
-  // } else if (headX === tileCount) {
-  //   gameOver = true;
-  // } else if (headY < 0) {
-  //   gameOver = true;
-  // } else if (headY === tileCount) {
-  //   gameOver = true;
-  // }
-
-  for (let i = 0; i < snakeParts.length; i++) {
-    let part = snakeParts[i];
+  for (let part of snakeParts) {
     if (part.x === headX && part.y === headY) {
-      gameOver = true;
-      break;
+      drawGameOverScreen();
+      return true;
     }
   }
+  return false;
+}
 
-  if (gameOver) {
-    ctx.fillStyle = "white";
-    ctx.font = "50px Verdana";
+function drawGameOverScreen() {
+  ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    if (gameOver) {
-      ctx.fillStyle = "white";
-      ctx.font = "50px Verdana";
+  ctx.fillStyle = "white";
+  ctx.font = "50px Verdana";
+  ctx.textAlign = "center";
+  ctx.fillText("Game Over!", canvas.width / 2, canvas.height / 2);
 
-      var gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-      gradient.addColorStop("0", " magenta");
-      gradient.addColorStop("0.5", "blue");
-      gradient.addColorStop("1.0", "red");
-      // Fill with gradient
-      ctx.fillStyle = gradient;
-
-      ctx.fillText("Game Over!", canvas.width / 6.5, canvas.height / 2);
-    }
-
-    ctx.fillText("Game Over!", canvas.width / 6.5, canvas.height / 2);
-  }
-
-  return gameOver;
+  ctx.font = "20px Verdana";
+  ctx.fillText("Press F5 to Restart", canvas.width / 2, canvas.height / 2 + 40);
 }
 
 function drawScore() {
-  ctx.fillStyle = "black";
+  ctx.fillStyle = "white";
   ctx.font = "10px Verdana";
   ctx.fillText("Score " + score, canvas.width - 50, 10);
 }
 
 function clearScreen() {
-  ctx.fillStyle = "lime";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 }
 
 function drawSnake() {
-  ctx.fillStyle = "green";
+  ctx.drawImage(
+    currentHeadImage,
+    headX * tileCount,
+    headY * tileCount,
+    tileSize,
+    tileSize
+  );
+
   for (let i = 0; i < snakeParts.length; i++) {
     let part = snakeParts[i];
-    ctx.fillRect(part.x * tileCount, part.y * tileCount, tileSize, tileSize);
-  }
+    let prevPart = snakeParts[i - 1] || { x: headX, y: headY };
+    let nextPart = snakeParts[i + 1] || {
+      x: headX + xVelocity,
+      y: headY + yVelocity,
+    };
 
-  snakeParts.push(new SnakePart(headX, headY)); //put an item at the end of the list next to the head
-  while (snakeParts.length > tailLength) {
-    snakeParts.shift(); // remove the furthet item from the snake parts if have more than our tail size.
-  }
+    let img = bodyHorizontal;
+    if (prevPart.x === part.x && nextPart.x === part.x) img = bodyVertical;
+    if (prevPart.y === part.y && nextPart.y === part.y) img = bodyHorizontal;
+    if (
+      (prevPart.x > part.x && nextPart.y > part.y) ||
+      (prevPart.y > part.y && nextPart.x > part.x)
+    )
+      img = bodyTopLeft;
+    if (
+      (prevPart.x < part.x && nextPart.y > part.y) ||
+      (prevPart.y > part.y && nextPart.x < part.x)
+    )
+      img = bodyTopRight;
+    if (
+      (prevPart.x > part.x && nextPart.y < part.y) ||
+      (prevPart.y < part.y && nextPart.x > part.x)
+    )
+      img = bodyBottomLeft;
+    if (
+      (prevPart.x < part.x && nextPart.y < part.y) ||
+      (prevPart.y < part.y && nextPart.x < part.x)
+    )
+      img = bodyBottomRight;
 
-  ctx.fillStyle = "orange";
-  ctx.fillRect(headX * tileCount, headY * tileCount, tileSize, tileSize);
+    ctx.drawImage(
+      img,
+      part.x * tileCount,
+      part.y * tileCount,
+      tileSize,
+      tileSize
+    );
+  }
 }
 
 function changeSnakePosition() {
-  headX = headX + xVelocity;
-  headY = headY + yVelocity;
-
-  // Jika kepala keluar dari batas, teleport ke sisi berlawanan
-  if (headX < 0) {
-    headX = tileCount - 1; // Muncul di sisi kanan
-  } else if (headX >= tileCount) {
-    headX = 0; // Muncul di sisi kiri
+  snakeParts.push(new SnakePart(headX, headY));
+  while (snakeParts.length > tailLength) {
+    snakeParts.shift();
   }
 
-  if (headY < 0) {
-    headY = tileCount - 1; // Muncul di bagian bawah
-  } else if (headY >= tileCount) {
-    headY = 0; // Muncul di bagian atas
-  }
+  headX += xVelocity;
+  headY += yVelocity;
 }
 
 function drawApple() {
-  ctx.fillStyle = "red";
-  ctx.fillRect(appleX * tileCount, appleY * tileCount, tileSize, tileSize);
+  ctx.drawImage(
+    appleImage,
+    appleX * tileCount,
+    appleY * tileCount,
+    tileSize,
+    tileSize
+  );
 }
 
 function checkAppleCollision() {
-  if (appleX === headX && appleY == headY) {
+  if (appleX === headX && appleY === headY) {
     appleX = Math.floor(Math.random() * tileCount);
     appleY = Math.floor(Math.random() * tileCount);
     tailLength++;
@@ -175,36 +206,29 @@ function checkAppleCollision() {
 document.body.addEventListener("keydown", keyDown);
 
 function keyDown(event) {
-  //up
   if (event.keyCode == 38 || event.keyCode == 87) {
-    //87 is w
     if (inputsYVelocity == 1) return;
     inputsYVelocity = -1;
     inputsXVelocity = 0;
+    currentHeadImage = headUp;
   }
-
-  //down
   if (event.keyCode == 40 || event.keyCode == 83) {
-    // 83 is s
     if (inputsYVelocity == -1) return;
     inputsYVelocity = 1;
     inputsXVelocity = 0;
+    currentHeadImage = headDown;
   }
-
-  //left
   if (event.keyCode == 37 || event.keyCode == 65) {
-    // 65 is a
     if (inputsXVelocity == 1) return;
     inputsYVelocity = 0;
     inputsXVelocity = -1;
+    currentHeadImage = headLeft;
   }
-
-  //right
   if (event.keyCode == 39 || event.keyCode == 68) {
-    //68 is d
     if (inputsXVelocity == -1) return;
     inputsYVelocity = 0;
     inputsXVelocity = 1;
+    currentHeadImage = headRight;
   }
 }
 
