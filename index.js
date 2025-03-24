@@ -61,6 +61,23 @@ let yVelocity = 0;
 let score = 0;
 let gulpSound = new Audio("gulp.mp3");
 let currentHeadImage = headRight;
+<<<<<<< HEAD
+=======
+let level = 1;
+
+function updateLevel() {
+  if (score >= 10) {
+    level = 3;
+    speed = 15;
+  } else if (score >= 5) {
+    level = 2;
+    speed = 10;
+  } else {
+    level = 1;
+    speed = 5;
+  }
+}
+>>>>>>> 076462b (menambahkan level)
 
 function drawGame() {
   xVelocity = inputsXVelocity;
@@ -75,10 +92,16 @@ function drawGame() {
   drawApple();
   drawSnake();
   drawScore();
+<<<<<<< HEAD
 
   if (score > 5) speed = 9;
   if (score > 10) speed = 11;
 
+=======
+  drawLevel(); // Menampilkan level
+
+  updateLevel(); // Memeriksa dan memperbarui level
+>>>>>>> 076462b (menambahkan level)
   setTimeout(drawGame, 1000 / speed);
 }
 
@@ -99,6 +122,15 @@ function isGameOver() {
   return false;
 }
 
+<<<<<<< HEAD
+=======
+function drawLevel() {
+  ctx.fillStyle = "white";
+  ctx.font = "14px Verdana";
+  ctx.fillText("Level " + level, 10, 20);
+}
+
+>>>>>>> 076462b (menambahkan level)
 function drawGameOverScreen() {
   ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
